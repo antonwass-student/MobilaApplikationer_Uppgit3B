@@ -15,66 +15,56 @@
         android:layout_height="match_parent"
         android:scrollbarAlwaysDrawVerticalTrack="true"
         android:weightSum="10"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
         <Spinner android:id="@+id/paired_devices"
-            android:layout_height="0dp"
-            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
             android:layout_weight="1"
             android:spinnerMode="dialog"
             />
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:orientation="horizontal"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
             android:layout_weight="1"
             android:weightSum="11">
             <Button
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:layout_weight="5"
                 android:text="Start"
                 android:enabled="true"
-                android:background="@color/green"
-                android:onClick="onButtonStart"/>
+                android:background="@color/green"/>
             <Space
                 android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:layout_width="0dp" />
+                android:layout_height="0dp"
+                android:layout_width="match_parent" />
             <Button
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:layout_weight="5"
                 android:text="Stop"
                 android:enabled="false"
-                android:background="@color/red"
-                android:onClick="onButtonStop"/>
+                android:background="@color/red"/>
         </LinearLayout>
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="2"
-            android:fillViewport="true"
-            android:scrollbars="vertical"
-            android:scrollbarAlwaysDrawVerticalTrack="true"
-            android:id="@+id/output_scroll">
-            <TextView
-                android:padding="5dp"
-                android:id="@+id/textview_output"
-                android:layout_height="match_parent"
-                android:layout_width="match_parent"
-                android:layout_weight="1.0" />
-
-        </ScrollView>
 
 
         <com.jjoe64.graphview.GraphView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="6"
             android:id="@+id/graph"/>
+
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:padding="5dp"
+            android:text="Output"
+            android:id="@+id/textview_output"/>
 
     </LinearLayout>
 
