@@ -17,13 +17,6 @@
         android:weightSum="10"
         android:orientation="vertical">
 
-        <Spinner android:id="@+id/paired_devices"
-            android:layout_height="0dp"
-            android:layout_width="match_parent"
-            android:layout_weight="1"
-            android:spinnerMode="dialog"
-            />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -34,10 +27,11 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="5"
-                android:text="Start"
+                android:text="Download"
                 android:enabled="true"
                 android:background="@color/green"
-                android:onClick="onButtonStart"/>
+                android:onClick="onButtonStart"
+                android:id="@+id/button_start"/>
             <Space
                 android:layout_weight="1"
                 android:layout_height="match_parent"
@@ -46,35 +40,46 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="5"
-                android:text="Stop"
-                android:enabled="false"
+                android:text="Cancel"
                 android:background="@color/red"
-                android:onClick="onButtonStop"/>
+                android:onClick="onButtonStop"
+                android:enabled="false"
+                android:id="@+id/button_cancel"/>
         </LinearLayout>
 
-        <ScrollView
-            android:layout_width="match_parent"
+
+
+
+        <TextView
+            android:padding="5dp"
+            android:id="@+id/textview_output"
             android:layout_height="0dp"
-            android:layout_weight="2"
-            android:fillViewport="true"
-            android:scrollbars="vertical"
-            android:scrollbarAlwaysDrawVerticalTrack="true"
-            android:id="@+id/output_scroll">
-            <TextView
-                android:padding="5dp"
-                android:id="@+id/textview_output"
-                android:layout_height="match_parent"
-                android:layout_width="match_parent"
-                android:layout_weight="1.0" />
-
-        </ScrollView>
-
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:text="Pulse = "
+            android:textColor="@color/black"/>
 
         <com.jjoe64.graphview.GraphView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="6"
             android:id="@+id/graph"/>
+
+        <Button
+            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:text="Upload"
+            android:enabled="true"
+            android:id="@+id/button_upload"
+            android:onClick="onButtonUpload"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="Settings"
+            android:onClick="onButtonSettings"/>
 
     </LinearLayout>
 

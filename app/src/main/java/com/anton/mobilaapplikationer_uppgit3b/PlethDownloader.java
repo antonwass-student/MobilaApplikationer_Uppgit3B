@@ -4,14 +4,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.Spinner;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.Set;
 import java.util.UUID;
 
@@ -23,17 +16,13 @@ public class PlethDownloader {
 
     private final static int REQUEST_ENABLE_BT = 1;
     private MainActivity activity;
-    private Spinner pairedDevicesList;
     private BluetoothDevice selectedDevice;
 
     private ConnectThread connectThread;
     private SocketHandler socketHandler;
 
-    private LinkedList<PlethData> plethData = new LinkedList();
-
-    public PlethDownloader(MainActivity activity, Spinner pairedDevicesList) throws BluetoothNotSupportedException{
+    public PlethDownloader(MainActivity activity) throws BluetoothNotSupportedException{
         this.activity = activity;
-        this.pairedDevicesList = pairedDevicesList;
 
         BluetoothAdapter adapter
                 = BluetoothAdapter.getDefaultAdapter();
@@ -52,30 +41,12 @@ public class PlethDownloader {
 
         Set<BluetoothDevice> pairedDevices = adapter.getBondedDevices();
 
-        ArrayAdapter<BTWrap> arrayAdapter =
-                new ArrayAdapter(
-                        activity.getApplicationContext(),
-                        R.layout.support_simple_spinner_dropdown_item
-                );
-
         for(BluetoothDevice device : pairedDevices){
-            arrayAdapter.add(new BTWrap(device));
+            if(device.getName().contains("Nonin")){
+                selectedDevice = device;
+                break;
+            }
         }
-
-        pairedDevicesList.setAdapter(arrayAdapter);
-
-        pairedDevicesList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedDevice = ((BTWrap)parent.getSelectedItem()).getDevice();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                selectedDevice = null;
-            }
-        });
-
     }
 
     /**
@@ -93,25 +64,13 @@ public class PlethDownloader {
     }
 
     /**
-     *
-     * @param data
-     */
-    public synchronized void addPlethdata(PlethData data){
-        plethData.addLast(data);
-    }
-
-    public synchronized PlethData[] takePlethData(){
-        PlethData[] data = plethData.toArray(new PlethData[]{});
-        plethData.clear();
-        return data;
-    }
-
-    /**
      * closes all threads.
      */
     public void cancel(){
-        connectThread.cancel();
-        socketHandler.cancel();
+        if(connectThread!=null)
+            connectThread.cancel();
+        if(socketHandler!=null)
+            socketHandler.cancel();
     }
 
     /**
@@ -119,7 +78,7 @@ public class PlethDownloader {
      * @param socket
      */
     public void onConnected(BluetoothSocket socket){
-        socketHandler = new SocketHandler(this, socket);
+        socketHandler = new SocketHandler(activity, socket);
         socketHandler.start();
     }
 
@@ -127,5 +86,14 @@ public class PlethDownloader {
         public BluetoothNotSupportedException(String message){
             super(message);
         }
+    }
+
+    public void connectFailed(){
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                activity.onDeviceConnectFailed();
+            }
+        });
     }
 }

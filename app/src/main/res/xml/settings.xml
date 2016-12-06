@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Upload Server">
+        <EditTextPreference
+            android:title="IP"
+            android:inputType="text"
+            android:defaultValue="127.0.0.1"
+            android:key="server_ip"/>
+        <EditTextPreference
+            android:title="Port"
+            android:inputType="number"
+            android:defaultValue="12345"
+            android:key="server_port"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Nonin Sensor">
+        <EditTextPreference
+            android:title="Maximum measurement time (ms)"
+            android:inputType="number"
+            android:defaultValue="60000"
+            android:key="max_measure"/>
+        <EditTextPreference
+            android:title="Pleth data filename."
+            android:inputType="text"
+            android:defaultValue="pleth.dat"
+            android:key="pleth_filename"/>
+    </PreferenceCategory>
+
+
+</PreferenceScreen>
