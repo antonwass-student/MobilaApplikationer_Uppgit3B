@@ -3,6 +3,7 @@ package com.anton.mobilaapplikationer_uppgit3b;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -16,6 +17,8 @@ import android.widget.Toast;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
+
+import java.util.ArrayList;
 
 /**
  * TODO: Preference activity
@@ -34,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     private UploadTask uploadTask;
 
     private SharedPreferences sharedPreferences;
+
+    private ArrayList<DataPoint> plethData = new ArrayList();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +93,9 @@ public class MainActivity extends AppCompatActivity {
         showToast("Starting download...");
         startButton.setEnabled(false);
         plethDownloader.connectToDevice();
+        series.resetData(new DataPoint[]{});
+        plethData.clear();
+        stopButton.setEnabled(true);
     }
 
     /**
@@ -101,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
         String filename = sharedPreferences.getString("pleth_filename", null);
         int port = Integer.parseInt(sharedPreferences.getString("server_port", null));
         uploadTask = new UploadTask(this, ip, port);
-        uploadTask.doInBackground(filename);
+        uploadTask.execute(filename);
 
     }
 
@@ -124,8 +132,13 @@ public class MainActivity extends AppCompatActivity {
      */
     public void displayData(SensorData data){
         outputLog.setText("Pulse rate: " + data.getPulseRate());
-        outputLog.append("\nElapsed time: " + data.getTime()/1000f);
-        series.appendData(new DataPoint(System.currentTimeMillis() - startTime, data.getPleth()), false, 100);
+        outputLog.append("\nElapsed time: " + data.getTime()/1000);
+
+        for(int i : data.getPleth()){
+            plethData.add(new DataPoint(plethData.size(), i));
+        }
+
+        series.resetData(plethData.toArray(new DataPoint[]{}));
     }
 
     public void showToast(final CharSequence msg) {

@@ -5,16 +5,16 @@ package com.anton.mobilaapplikationer_uppgit3b;
  */
 
 public class SensorData {
-    private int pleth;
+    private int[] pleth;
     private int pulseRate;
     private long time;
 
-    public SensorData(int pleth, int pulseRate) {
+    public SensorData(int[] pleth, int pulseRate) {
         this.pleth = pleth;
         this.pulseRate = pulseRate;
     }
 
-    public int getPleth() {
+    public int[] getPleth() {
         return pleth;
     }
 

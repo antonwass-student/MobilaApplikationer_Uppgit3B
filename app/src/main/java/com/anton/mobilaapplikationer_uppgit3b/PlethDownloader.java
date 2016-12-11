@@ -57,7 +57,7 @@ public class PlethDownloader {
                 new ConnectThread(
                         this,
                         selectedDevice,
-                        UUID.fromString("490dc632-bbbc-11e6-a4a6-cec0c932ce01")
+                        UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
                 );
 
         connectThread.start();

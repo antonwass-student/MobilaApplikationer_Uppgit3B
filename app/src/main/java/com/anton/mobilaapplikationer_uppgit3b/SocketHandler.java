@@ -14,6 +14,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.concurrent.Exchanger;
 
 /**
  * Created by Anton on 2016-12-06.
@@ -64,6 +65,19 @@ public class SocketHandler extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }finally {
+
+            try{
+                inputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            try{
+                outputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
             try {
                 socket.close();
             } catch (IOException e) {
@@ -93,6 +107,14 @@ public class SocketHandler extends Thread {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             pw.println(sdf.format(Calendar.getInstance().getTime()));
 
+            byte[]frameData = new byte[5];
+            while(frameSync(frameData) == false){
+                inputStream.read(frameData);
+            }
+
+            frameData = new byte[(PACKET_SIZE/5)-5];
+            inputStream.read(frameData);
+
             while(reading && System.currentTimeMillis() - startTime < downloadTime){
                 byte[] buffer = new byte[PACKET_SIZE];
                 int readBytes = 0;
@@ -106,11 +128,13 @@ public class SocketHandler extends Thread {
 
                 sendToUI(sd);
 
-                pw.println(sd.getPleth());
+                for(int i : sd.getPleth())
+                    pw.println(i);
 
             }
         } catch (Exception e) {
             e.printStackTrace();
+
         } finally{
             pw.close();
             try {
@@ -130,8 +154,8 @@ public class SocketHandler extends Thread {
      */
     public SensorData extractData(byte[] data){
         //read byte 3 and 8. put them together to form an integer.
-        int msb = data[3]; // - 6 5 4 3 2 1 0
-        int lsb = data[8];// - - - - - - 8 7
+        int msb = data[103]; // - 6 5 4 3 2 1 0
+        int lsb = data[108];// - - - - - - 8 7
 
         msb = msb << 7;
 
@@ -141,11 +165,23 @@ public class SocketHandler extends Thread {
         // =
         // 8 7 6 5 4 3 2 1 0
 
-        int pulse = msb + lsb;
+        int pulse = lsb + msb;
 
-        int pleth = unsignedByteToInt(data[2]);
+        int[] pleth = new int[PACKET_SIZE/5];
+        for(int i = 0; i < PACKET_SIZE/5; i++){
+            pleth[i] = unsignedByteToInt(data[2 + (i*5)]);
+        }
 
         return new SensorData(pleth, pulse);
+    }
+
+    private boolean frameSync(byte[] data){
+        //check is sync flag is = 1
+        if((data[1] & 1) == 1){
+            return true;
+        }
+        else
+            return false;
     }
 
     private int unsignedByteToInt(byte b) {
